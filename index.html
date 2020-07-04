@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        background-color: rgb(29, 161, 242);
+      }
+      .input {
+        margin: 5px;
+      }
+      .header {
+        color: white;
+        text-align: center;
+      }
+      .card {
+        margin: 5px;
+        padding: 5px;
+        background-color: white;
+        border: 1px solid white;
+        border-radius: 8px 8px;
+      }
+      .img {
+        width: 100%;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <h1 class="header">Twitter Stream</h1>
+      <div class="input">
+        <input type="text" v-model="txt" />
+        <button @click="track">Track</button>
+        <button @click="stop">Stop</button>
+      </div>
+      <div v-for="tw in tweets">
+        <div class="card" v-if="!tw.text.includes('RT')">
+          <p class="tw">{{tw.text}}</p>
+          <img
+            class="img"
+            v-if="tw.entities.media"
+            :src="tw.entities.media[0].media_url"
+            alt=""
+          />
+        </div>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+      var socket = io();
+      new Vue({
+        el: "#app",
+        data: {
+          txt: "Twice",
+          tweets: [],
+        },
+        methods: {
+          track() {
+            this.tweets = [];
+            socket.emit("track", this.txt);
+          },
+          stop() {
+            socket.emit("stop");
+          },
+        },
+        mounted() {
+          socket.on("tweet", (res) => {
+            let arr = this.tweets;
+            arr.unshift(res);
+            this.tweets = arr;
+          });
+        },
+      });
+    </script>
+  </body>
+</html>
