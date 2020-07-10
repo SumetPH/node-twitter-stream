@@ -7,3 +7,6 @@ Host : Heroku
 
 ## Reference
 https://node-twitter-stream-sumetph.herokuapp.com/
+
+## Example
+<img src="https://i.imgur.com/manQgUQ.png" />
